@@ -1,0 +1,33 @@
+.nav-links {
+  display: inline-block;
+  background: rgb(0, 163, 155);
+  text-decoration: none;
+  color: var(--text-dark);
+  font-weight: 500;
+  transition: color 0.3s ease;
+  padding: 10px 15px;
+}
+
+.nav-links:hover {
+  background: var(--primary-color);
+  color: white;
+  border-radius: 5px;
+}
+
+nav {
+  background-color: rgb(6, 109, 109);
+  text-align: center;
+  margin: auto;
+  padding: 5px 0;
+}
+
+footer {
+  background-color: rgb(6, 109, 109);
+  text-align: center;
+  margin: auto;
+  padding: 3px 0;
+  color: white;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
