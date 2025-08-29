@@ -4,3 +4,7 @@ from .models import Product  # Asegúrate de que este es el nombre de tu modelo 
 def home(request):
     products = Product.objects.all()
     return render(request, 'store/home.html', {'products': products})
+
+def product_list(request):
+    products = Product.objects.all()
+    return render(request, 'store/products.html', {'products': products})

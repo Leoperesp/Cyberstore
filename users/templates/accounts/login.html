@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
-    <title>Registro CyberStore</title>
+    <title>Login CyberStore</title>
 </head>
 <body>
     <div class="login-container">
         <h1>CyberStore</h1>
-        <h2>Registro de usuario</h2>
+        <h2>Iniciar Sesión</h2>
 
         <form method="post" class="form-group">
             {% csrf_token %}
@@ -22,7 +22,7 @@
             ¿Olvidaste tu contraseña? <a href="#">Recuperar</a>
         </div>
         <div class="link-text">
-            ¿Ya tienes cuenta? <a href="{% url 'users:login' %}">Iniciar sesión</a>
+            ¿No tienes cuenta? <a href="{% url 'users:register' %}">Crea una</a>
         </div>
     </div>
 </body>

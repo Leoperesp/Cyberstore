@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - CyberShop{% endblock %}
+
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/products.css' %}">
+    <title>Productos de Tienda de PC</title>
+</head>
+<body>
+
+    <div class="container">
+        {% for producto in productos %}
+        <a href="{% url 'nombre_de_tu_url_detalle' producto.id %}" class="product-card">
+            <div class="product-image-container">
+                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="product-image">
+            </div>
+            <div class="product-info">
+                <h2 class="product-title">{{ producto.nombre }}</h2>
+                <p class="product-description">{{ producto.descripcion|truncatechars:100 }}</p>
+                <p class="product-price">${{ producto.precio }}</p>
+            </div>
+            <div style="padding: 15px; border-top: 1px solid #eee;">
+                <button type="button" class="btn-add-to-cart">Agregar al carrito</button>
+            </div>
+        </a>
+        {% empty %}
+            <p>No hay productos disponibles en este momento.</p>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
+{% endblock %}
