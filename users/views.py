@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, LoginForm
 from django.contrib.auth import authenticate, login
 
 def register(request):
@@ -14,12 +14,18 @@ def register(request):
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('home') # Redirige a la página principal después de iniciar sesión
-        else:
-            return render(request, 'accounts/login.html', {'error': 'Credenciales inválidas'})
-    return render(request, 'accounts/login.html')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                if not form.cleaned_data.get('remember_me'):
+                    request.session.set_expiry(0)  
+                return redirect('home')
+            else:
+                form.add_error(None, 'Invalid username or password')
+    else:
+        form = LoginForm()
+    return render(request, 'accounts/login.html', {'form': form})

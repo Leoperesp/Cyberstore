@@ -4,7 +4,7 @@ h1{
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: #f4f7f6;
+    background: linear-gradient(50deg,rgba(7, 163, 168, 1) 0%, rgba(78, 204, 196, 1) 50%, rgba(255, 255, 255, 1) 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,12 +12,12 @@ body {
     margin: 0;
 }
 .login-container {
-    background-color: #fff;
-    padding: 40px;
+    background-color: #ffffff2c;
+    padding: 25px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 400px;
+    max-width: 320px;
     text-align: center;
 }
 .login-container h2 {
@@ -32,24 +32,24 @@ body {
     display: block;
     margin-bottom: 8px;
     color: #555;
-    font-weight: 600;
+    font-weight: 400;
 }
 .form-group input {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 12px;
 }
 .form-group input:focus {
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    border-color: #00ffaa;
+    box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.25);
 }
 .error-messages {
     color: #dc3545;
-    font-size: 14px;
+    font-size: 12px;
     margin-bottom: 16px;
     text-align: left;
 }
@@ -60,7 +60,7 @@ body {
     border: none;
     border-radius: 8px;
     color: #fff;
-    font-size: 18px;
+    font-size: 12px;
     font-weight: 700;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -69,9 +69,9 @@ body {
     background-color: rgb(0, 163, 155);
 }
 .link-text {
-    margin-top: 20px;
+    margin-top: 10px;
     color: #555;
-    font-size: 14px;
+    font-size: 12px;
 }
 .link-text a {
     color: #007bff;
