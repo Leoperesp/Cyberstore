@@ -1,0 +1,30 @@
+
+.product-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+.product-image {
+    max-width: 300px;
+    max-height: 300px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+.product-details {
+    flex: 1;
+}
+.product-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 2rem;
+}
+.old-price {
+    text-decoration: line-through;
+    color: #888;
+    margin-right: 1rem;
+}
+.offer-price {
+    color: #e53935;
+}
