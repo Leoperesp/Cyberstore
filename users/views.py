@@ -29,3 +29,27 @@ def login_view(request):
     else:
         form = LoginForm()
     return render(request, 'accounts/login.html', {'form': form})
+
+def admin_panel(request):
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return redirect('users:login')
+    return render(request, 'accounts/admin_panel.html')
+
+def edit_account(request):
+    if not request.user.is_authenticated:
+        return redirect('users:login')
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = CustomUserCreationForm(instance=request.user)
+    return render(request, 'accounts/edit.html', {'form': form})
+
+def delete_account(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            request.user.delete()
+        return redirect('home')
+    return render(request, 'accounts/delete_account.html')

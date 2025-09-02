@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <title>Registro CyberStore</title>
+</head>
+<body>
+    <div class="login-container">
+        <h1>CyberStore</h1>
+        <h2>Edición de usuario</h2>
+
+        <form method="post" class="form-group">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-submit">Editar</button>
+        </form>
+
+        <div class="link-text">
+            <a href="{% url 'store:home' %}">Volver a la tienda</a>
+        </div>
+    </div>
+</body>
+</html>

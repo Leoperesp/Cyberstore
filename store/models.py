@@ -19,12 +19,27 @@ class Product(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+    def get_default_document_number():
+        from users.models import CustomUser
+        return getattr(CustomUser.objects.first(), 'document_number', '')
+    document_number = models.CharField(default=get_default_document_number)
     created_at = models.DateTimeField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     is_paid = models.BooleanField(default=False)
-    payment_method = models.CharField(max_length=50, choices=[('credit_card', 'Tarjeta de Crédito'), ('paypal', 'PayPal'), ('cash', 'Efectivo')]) # Ejemplo de métodos de pago
-    shipping_address = models.TextField()
-    # ... campos de envío
+    payment_method = models.CharField(
+        choices=[
+            ('credit_card', 'Tarjeta de Crédito'),
+            ('paypal', 'PayPal'),
+            ('cash', 'Efectivo')
+        ],
+        default='cash')
+    def get_default_address():
+        from users.models import CustomUser
+        return getattr(CustomUser.objects.first(), 'address', '')
+    shipping_address = models.CharField(
+        max_length=255,
+        default=get_default_address
+    )
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Administrador - CyberShop{% endblock %}
+
+{% block content %}
+{% load static %}
+    <h1>Panel Administrador</h1>
+    <div>
+        <a href="{% url 'manage_users' %}">Control de usuarios</a>
+        <a href="{% url 'manage_products' %}">Control de productos</a>
+        <a href="{% url 'manage_orders' %}">Control de pedidos</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+{% endblock %}
