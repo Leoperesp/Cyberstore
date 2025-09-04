@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from .forms import CustomUserCreationForm, LoginForm
 from django.contrib.auth import authenticate, login
@@ -7,7 +8,7 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')
+            return redirect('users:login')
     else:
         form = CustomUserCreationForm()
     return render(request, 'accounts/register.html', {'form': form})
@@ -23,17 +24,29 @@ def login_view(request):
                 login(request, user)
                 if not form.cleaned_data.get('remember_me'):
                     request.session.set_expiry(0)  
-                return redirect('home')
+                return redirect('store:home')
             else:
                 form.add_error(None, 'Invalid username or password')
     else:
         form = LoginForm()
     return render(request, 'accounts/login.html', {'form': form})
 
+def logout_view(request):
+    from django.contrib.auth import logout
+    logout(request)  
+    messages.success(request, 'Has cerrado sesión correctamente.')
+    return redirect('store:home')
+
 def admin_panel(request):
     if not request.user.is_authenticated or not request.user.is_admin:
         return redirect('users:login')
-    return render(request, 'accounts/admin_panel.html')
+    return render(request, 'admin/admin_panel.html')
+
+def manage_users(request):
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return redirect('users:login')
+    users = CustomUserCreationForm.Meta.model.objects.all()
+    return render(request, 'admin/manage_users.html', {'users': users})
 
 def edit_account(request):
     if not request.user.is_authenticated:

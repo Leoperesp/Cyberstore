@@ -27,12 +27,14 @@ nav {
 footer {
   background-color: rgb(6, 109, 109);
   text-align: center;
-  margin: auto;
+  margin: 0;
   padding: 3px 0;
   color: white;
-  position: relative;
+  position: fixed;
+  left: 0;
   bottom: 0;
   width: 100%;
+  z-index: 100;
 }
 
 /* Dropdown styles */
