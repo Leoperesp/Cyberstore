@@ -12,3 +12,12 @@ def product_list(request):
 def product_detail(request, product_id):
     product = Product.objects.get(id=product_id)
     return render(request, 'store/product_detail.html', {'product': product})
+
+def about(request):
+    return render(request, 'store/about.html') 
+
+def contact(request):
+    return render(request, 'store/contact.html')
+
+def faq(request):
+    return render(request, 'store/faq.html')
