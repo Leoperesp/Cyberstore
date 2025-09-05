@@ -3,12 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Administrar Usuarios</title>
-    <style>
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 8px; border: 1px solid #ddd; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .actions a { margin-right: 8px; }
-    </style>
+    <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
     <h1>Lista de Usuarios Registrados</h1>
@@ -28,8 +23,8 @@
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
                 <td class="actions">
-                    <a href="{% url 'edit_account' user.id %}">Editar</a>
-                    <a href="{% url 'delete_account' user.id %}" onclick="return confirm('¿Está seguro de eliminar este usuario?');">Eliminar</a>
+                    <a href="{% url 'users:edit_account' user.id %}" class="edit">Editar</a>
+                    <a href="{% url 'users:delete_account' user.id %}" class="delete" onclick="return confirm('¿Está seguro de eliminar este usuario?');">Eliminar</a>
                 </td>
             </tr>
             {% empty %}
@@ -39,5 +34,8 @@
             {% endfor %}
         </tbody>
     </table>
+    <div>
+        <a class="admin-option" href="{% url 'users:admin_panel' %}">Panel Admin</a>
+    </div>
 </body>
 </html>

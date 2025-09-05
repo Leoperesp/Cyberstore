@@ -1,7 +1,8 @@
 from django.contrib import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CustomUserCreationForm, LoginForm
 from django.contrib.auth import authenticate, login
+from .models import CustomUser
 
 def register(request):
     if request.method == 'POST':
@@ -48,21 +49,24 @@ def manage_users(request):
     users = CustomUserCreationForm.Meta.model.objects.all()
     return render(request, 'admin/manage_users.html', {'users': users})
 
-def edit_account(request):
-    if not request.user.is_authenticated:
+def edit_account(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    if not request.user.is_authenticated or request.user != user:
         return redirect('users:login')
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST, instance=request.user)
+        form = CustomUserCreationForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
             return redirect('home')
     else:
-        form = CustomUserCreationForm(instance=request.user)
+        form = CustomUserCreationForm(instance=user)
     return render(request, 'accounts/edit.html', {'form': form})
 
-def delete_account(request):
+def delete_account(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    if not request.user.is_authenticated or request.user != user:
+        return redirect('users:login')
     if request.method == 'POST':
-        if request.user.is_authenticated:
-            request.user.delete()
+        user.delete()
         return redirect('home')
-    return render(request, 'accounts/delete_account.html')
+    return render(request, 'accounts/delete_account.html', {'user': user})
