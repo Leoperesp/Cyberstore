@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Administrar Usuarios</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+    <h1>Lista de Productos</h1>
+    <table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>precio</th>
+            <th>stock</th>
+            <th>imagen</th>
+            <th>disponible</th>
+            <th>descripción</th>
+            <th>en oferta</th>
+            <th>precio de oferta</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for producto in productos %}
+        <tr>
+            <td>{{ producto.id }}</td>
+            <td>{{ producto.nombre }}</td>
+            <td>{{ producto.precio }}</td> 
+            <td>{{ producto.stock }}</td>
+            <td>
+                {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" width="50">
+                {% else %}
+                    Sin imagen
+                {% endif %}
+            </td>
+            <td>{{ producto.disponible }}</td>
+            <td>{{ producto.descripcion }}</td>
+            <td>{{ producto.en_oferta }}</td>
+            <td>{{ producto.precio_oferta }}</td>
+            <td>
+                <a href="{% url 'edit_product' producto.id %}" class="btn btn-primary">Editar</a>
+                <form action="{% url 'delete_product' producto.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Borrar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    <div>
+        <a class="admin-option" href="{% url 'store:add_product' %}">Agregar Producto</a>
+    <div>
+        <a class="admin-option" href="{% url 'users:admin_panel' %}">Panel Admin</a>
+    </div>
+</body>
+</html>
+
