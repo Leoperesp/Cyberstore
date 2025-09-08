@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Product  # Asegúrate de que este es el nombre de tu modelo de producto
 from .forms import ProductForm
+from .models import Order
 
 def home(request):
     products = Product.objects.all()
@@ -58,3 +59,19 @@ def delete_product(request, product_id):
     product = Product.objects.get(id=product_id)
     product.delete()
     return redirect('store:manage_products')
+
+def manage_orders(request):
+    products = Product.objects.all()
+    return render(request, 'store/admin/manage_orders.html', {'products': products})
+
+def update_order_status(request, order_id):
+    order = Order.objects.get(id=order_id)
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'shipped':
+            order.status = 'shipped'
+        elif action == 'canceled':
+            order.status = 'canceled'
+        order.save()
+        return redirect('store:order_detail', order_id=order.id)
+    return render(request, 'store/admin/order_detail.html', {'order': order})

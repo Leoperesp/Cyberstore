@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Detalle del Pedido</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>En Oferta</th>
+            <th>Descuento</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% set total = 0 %}
+        {% set total_descuento = 0 %}
+        {% for item in order.items.all %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.price|floatformat:2 }}</td>
+            <td>
+                {% if item.product.on_offer %}
+                    Sí
+                {% else %}
+                    No
+                {% endif %}
+            </td>
+            <td>
+                {% if item.product.on_offer %}
+                    ${{ item.product.discount|floatformat:2 }}
+                    {% set descuento = item.product.discount * item.quantity %}
+                {% else %}
+                    $0.00
+                    {% set descuento = 0 %}
+                {% endif %}
+            </td>
+            <td>
+                ${{ item.get_total_price|floatformat:2 }}
+            </td>
+        </tr>
+        {% set total = total + item.get_total_price %}
+        {% set total_descuento = total_descuento + descuento %}
+        {% endfor %}
+    </tbody>
+</table>
+
+<p><strong>Total:</strong> ${{ total|floatformat:2 }}</p>
+<p><strong>Total Descuentos:</strong> ${{ total_descuento|floatformat:2 }}</p>
+<p><strong>Observaciones:</strong> {{ order.observations }}</p>
+
+<form method="post" action="{% url 'store:order_update_status' order.id %}">
+    {% csrf_token %}
+    <button type="submit" name="action" value="shipped" {% if order.status != 'pending' %}disabled{% endif %}>
+        Despachar Pedido
+    </button>
+    <button type="submit" name="action" value="canceled" {% if order.status != 'pending' %}disabled{% endif %}>
+        Cancelar Pedido
+    </button>
+</form>
+{% endblock %}

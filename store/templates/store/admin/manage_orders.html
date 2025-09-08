@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar ordenes</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+    <h1>Lista de Ordenes</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Fecha de Orden</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for orden in ordenes %}
+            <tr>
+                <td>{{ orden.id }}</td>
+                <td>{{ orden.usuario.username }}</td>
+                <td>{{ orden.fecha_orden }}</td>
+                <td>{{ orden.total }}</td>
+                <td>{{ orden.estado }}</td>
+                <td>
+                    <a href="{% url 'view_order' orden.id %}" class="btn btn-primary">Ver Detalles</a>
+                    <form action="{% url 'delete_order' orden.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        <a class="admin-option" href="{% url 'users:admin_panel' %}">Panel Admin</a>
+    </div>
+</body>
+</html>

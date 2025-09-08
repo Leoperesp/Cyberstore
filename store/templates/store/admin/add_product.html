@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
-    <title>Registro CyberStore</title>
+    <title>Productos CyberStore</title>
 </head>
 <body>
-    <div>
-        <h2>Agregar Producto</h2>
+    <div class="login-container">
+        <h1>Agregar Producto</h1>
         <form method="post" class="form-group" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
-        <button type="submit">Agregar</button>
+        <button type="submit" class="btn-submit">Agregar</button>
         </form>
         <div class="link-text">
             <a href="{% url 'store:manage_products' %}">Volver a la lista de productos</a>

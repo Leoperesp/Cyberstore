@@ -40,6 +40,11 @@ class Order(models.Model):
         max_length=255,
         default=get_default_address
     )
+    status = models.CharField(
+        choices=[('pending', 'Pendiente'), ('shipped', 'Enviado'), ('delivered', 'Entregado'), ('canceled', 'Cancelado')],
+        default='pending'
+    )
+    observations = models.TextField(blank=True)
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
