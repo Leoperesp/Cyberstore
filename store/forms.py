@@ -4,7 +4,7 @@ from .models import Product
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'price', 'stock', 'image', 'is_available', 'description', 'is_offered', 'offer_price']
+        fields = ['category', 'name', 'price', 'stock', 'image', 'is_available', 'description', 'is_offered', 'offer_price']
         widgets = {
             'price': forms.NumberInput(attrs={'step': '0.01'}),
             'stock': forms.NumberInput(attrs={'step': '1'}),
@@ -29,4 +29,4 @@ class OrderForm(forms.Form):
         self.fields['payment_method'].widget.attrs['readonly'] = True
         self.fields['is_paid'].widget.attrs['readonly'] = True
         self.fields['status'].widget.attrs['readonly'] = True
-        
+

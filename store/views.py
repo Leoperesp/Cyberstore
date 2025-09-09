@@ -42,18 +42,13 @@ def add_product(request):
 def edit_product(request, product_id):
     product = Product.objects.get(id=product_id)
     if request.method == 'POST':
-        product.name = request.POST.get('name')
-        product.price = request.POST.get('price')
-        product.stock = request.POST.get('stock')
-        if 'image' in request.FILES:
-            product.image = request.FILES.get('image') 
-        product.is_available = request.POST.get('is_available') == 'on'
-        product.description = request.POST.get('description')
-        product.is_offered = request.POST.get('is_offered') == 'on'
-        product.offer_price = request.POST.get('offer_price') if product.is_offered else None
-        product.save()
-        return redirect('store:manage_products')
-    return render(request, 'store/edit_product.html', {'product': product})
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('store:manage_products')
+    else:
+        form = ProductForm(instance=product)
+    return render(request, 'store/admin/edit_product.html', {'form': form})
 
 def delete_product(request, product_id):
     product = Product.objects.get(id=product_id)

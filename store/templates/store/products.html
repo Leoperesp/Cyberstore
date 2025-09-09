@@ -15,15 +15,15 @@
 <body>
 
     <div class="container">
-        {% for producto in productos %}
-        <a href="{% url 'nombre_de_tu_url_detalle' producto.id %}" class="product-card">
+        {% for product in products %}
+        <a href="{% url 'store:product_detail' product.id %}" class="product-card">
             <div class="product-image-container">
-                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="product-image">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
             </div>
             <div class="product-info">
-                <h2 class="product-title">{{ producto.nombre }}</h2>
-                <p class="product-description">{{ producto.descripcion|truncatechars:100 }}</p>
-                <p class="product-price">${{ producto.precio }}</p>
+                <h2 class="product-title">{{ product.name }}</h2>
+                <p class="product-description">{{ product.description|truncatechars:100 }}</p>
+                <p class="product-price">${{ product.price }}</p>
             </div>
             <div style="padding: 15px; border-top: 1px solid #eee;">
                 <button type="button" class="btn-add-to-cart">Agregar al carrito</button>

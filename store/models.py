@@ -1,12 +1,20 @@
 from django.db import models
 from users.models import CustomUser# Para vincular con el usuario
 
-class Category(models.Model):
-    name = models.CharField(max_length=100)
-    # ... otros campos
-
 class Product(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.CharField(
+        choices=[
+            ('Procesadores', 'Procesadores'),
+            ('Monitores', 'Monitores'),
+            ('Memorias RAM', 'Memorias RAM'),
+            ('Memorias de Almacenamiento', 'Memorias de Almacenamiento'),
+            ('Placas de video', 'Placas de video'),
+            ('Fuentes de energia', 'Fuentes de energia'),
+            ('Motherboards', 'Motherboards'),
+            ('Refrigeracion', 'Refrigeracion'),
+            ('Gabinetes', 'Gabinetes')
+        ],
+        default='Procesadores')
     name = models.CharField(max_length=200)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField()
@@ -15,7 +23,6 @@ class Product(models.Model):
     description = models.TextField(blank=True)
     is_offered = models.BooleanField(default=False)
     offer_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    # ... otros campos
 
 class Order(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)

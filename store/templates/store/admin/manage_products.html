@@ -23,28 +23,26 @@
         </tr>
     </thead>
     <tbody>
-        {% for producto in productos %}
+        {% for product in products %}
         <tr>
-            <td>{{ producto.id }}</td>
-            <td>{{ producto.nombre }}</td>
-            <td>{{ producto.precio }}</td> 
-            <td>{{ producto.stock }}</td>
+            <td>{{ product.id }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.price }}</td> 
+            <td>{{ product.stock }}</td>
             <td>
-                {% if producto.imagen %}
-                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" width="50">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" width="50">
                 {% else %}
                     Sin imagen
                 {% endif %}
             </td>
-            <td>{{ producto.disponible }}</td>
-            <td>{{ producto.descripcion }}</td>
-            <td>{{ producto.en_oferta }}</td>
-            <td>{{ producto.precio_oferta }}</td>
-            <td>
-                <a href="{% url 'edit_product' producto.id %}" class="btn btn-primary">Editar</a>
-                <form action="{% url 'delete_product' producto.id %}" method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Borrar</button>
+            <td>{{ product.is_available }}</td>
+            <td>{{ product.description }}</td>
+            <td>{{ product.is_offered }}</td>
+            <td>{{ product.offer_price }}</td>
+            <td class="actions">
+                <a href="{% url 'store:edit_product' product.id %}" class="edit">Editar</a>
+                <a href="{% url 'store:delete_product' user.id %}" class="delete" onclick="return confirm('¿Está seguro de borrar este producto?');">Borrar</a>
                 </form>
             </td>
         </tr>

@@ -7,20 +7,20 @@
     <h1>Nuestras ofertas</h1>
     <div class="product-list">
         {% for product in products %}
-            <div class="product-item">
-                <h2>{{ product.name }}</h2>
-                <p>Precio: ${{ product.price }}</p>
-                {% if product.is_offered %}
+            {% if product.is_offered %}
+                <div class="product-item">
+                    <h2>{{ product.name }}</h2>
+                    <p>Precio: ${{ product.price }}</p>
                     <p>Oferta: ${{ product.offer_price }}</p>
-                {% endif %}
-                <p>Stock: {{ product.stock }}</p>
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                {% else %}
-                    <img src="{% static 'imgs/default_product_image.jpg' %}" alt="Imagen no disponible">
-                {% endif %}
-                <a href="{% url 'product_detail' product.id %}">Ver detalles</a>
-            </div>
+                    <p>Stock: {{ product.stock }}</p>
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="{% static 'imgs/default_product_image.jpg' %}" alt="Imagen no disponible">
+                    {% endif %}
+                    <a href="{% url 'store:product_detail' product.id %}">Ver detalles</a>
+                </div>
+            {% endif %}
         {% empty %}
             <p>No hay productos en oferta en este momento.</p>
         {% endfor %}
