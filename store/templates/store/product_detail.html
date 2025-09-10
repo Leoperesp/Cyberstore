@@ -1,28 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %} {{ product.name }} {% endblock %}
+
+{% block content %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>{{ product.name }}</title>
     <link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
 </head>
 <body>
-    <h1>{{ product.name }}</h1>
+    <h1 class="product-title">{{ product.name }}</h1> 
     <div class="product-container">
         <div>
             <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
         </div>
         <div class="product-details">
             <p>{{ product.description }}</p>
-        </div>
-    </div>
-    <div class="product-price">
-        {% if product.is_offer %}
+            <p class="product-availability {% if product.is_available %}in-stock{% else %}out-of-stock{% endif %}">
+                {% if product.is_available %} {{ product.stock }} Unidades disponibles{% else %}Sin stock{% endif %}
+            </p> 
+            <p  class="product-price">
+             {% if product.is_offer %}
             <span class="old-price">${{ product.price }}</span>
             <span class="offer-price">${{ product.offer_price }}</span>
-        {% else %}
-            ${{ product.price }}
-        {% endif %}
+            {% else %}
+            $  {{ product.price }}
+            {% endif %}
+            </p>
+            {% if product.is_available %}
+            <form method="post" action="#">
+                {% csrf_token %}
+                <label for="quantity">Unidades:</label>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}">
+                <button type="submit" class="btn-add-to-cart">Agregar al carrito</button>
+            </form>
+            {% else %}
+            <p class="out-of-stock-message">Producto sin stock</p>
+            {% endif %}
+        </div>
     </div>
+
+
 </body>
 </html>
+{% endblock %}

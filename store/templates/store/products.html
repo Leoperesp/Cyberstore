@@ -1,19 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}Inicio - CyberShop{% endblock %}
+{% block title %}Productos - CyberShop{% endblock %}
 
 {% block content %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/products.css' %}">
-    <title>Productos de Tienda de PC</title>
 </head>
 <body>
-
+    <h1 class="page-title">Nuestros Productos</h1>
     <div class="container">
         {% for product in products %}
         <a href="{% url 'store:product_detail' product.id %}" class="product-card">
@@ -30,7 +25,7 @@
             </div>
         </a>
         {% empty %}
-            <p>No hay productos disponibles en este momento.</p>
+            <p class="noitems">No hay productos disponibles en este momento.</p>
         {% endfor %}
     </div>
 
