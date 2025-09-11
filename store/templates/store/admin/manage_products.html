@@ -7,53 +7,58 @@
 </head>
 <body>
     <h1>Lista de Productos</h1>
-    <table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>precio</th>
-            <th>stock</th>
-            <th>imagen</th>
-            <th>disponible</th>
-            <th>descripción</th>
-            <th>en oferta</th>
-            <th>precio de oferta</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for product in products %}
-        <tr>
-            <td>{{ product.id }}</td>
-            <td>{{ product.name }}</td>
-            <td>{{ product.price }}</td> 
-            <td>{{ product.stock }}</td>
-            <td>
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" width="50">
-                {% else %}
-                    Sin imagen
-                {% endif %}
-            </td>
-            <td>{{ product.is_available }}</td>
-            <td>{{ product.description }}</td>
-            <td>{{ product.is_offered }}</td>
-            <td>{{ product.offer_price }}</td>
-            <td class="actions">
-                <a href="{% url 'store:edit_product' product.id %}" class="edit">Editar</a>
-                <a href="{% url 'store:delete_product' user.id %}" class="delete" onclick="return confirm('¿Está seguro de borrar este producto?');">Borrar</a>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-    <div>
+    <div class="option-container">
         <a class="admin-option" href="{% url 'store:add_product' %}">Agregar Producto</a>
-    <div>
         <a class="admin-option" href="{% url 'users:admin_panel' %}">Panel Admin</a>
     </div>
+    <table class="table-container">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>precio</th>
+                <th>stock</th>
+                <th>imagen</th>
+                <th>disponible</th>
+                <th>descripción</th>
+                <th>en oferta</th>
+                <th>precio de oferta</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }}</td> 
+                <td>{{ product.stock }}</td>
+                <td>
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" width="50">
+                    {% else %}
+                        Sin imagen
+                    {% endif %}
+                </td>
+                <td>{{ product.is_available }}</td>
+                <td>{{ product.description }}</td>
+                <td>{{ product.is_offered }}</td>
+                <td>{{ product.offer_price }}</td>
+                <td>
+                    <div class="actions">
+                        <a href="{% url 'store:edit_product' product.id %}" 
+                        class="edit">Editar
+                        </a>
+                        <a href="{% url 'store:delete_product' user.id %}" 
+                        class="delete" onclick="return confirm('¿Está seguro de borrar este producto?');">Borrar
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 </body>
 </html>
 

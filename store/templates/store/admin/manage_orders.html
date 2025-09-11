@@ -8,6 +8,9 @@
 </head>
 <body>
     <h1>Lista de Ordenes</h1>
+    <div class="option-container">
+        <a class="admin-option" href="{% url 'users:admin_panel' %}">Panel Admin</a>
+    </div>
     <table>
         <thead>
             <tr>
@@ -38,9 +41,5 @@
             {% endfor %}
         </tbody>
     </table>
-
-    <div>
-        <a class="admin-option" href="{% url 'users:admin_panel' %}">Panel Admin</a>
-    </div>
 </body>
 </html>

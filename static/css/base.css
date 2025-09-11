@@ -1,6 +1,6 @@
 .nav-links {
   display: inline-block;
-  background: rgb(0, 163, 155);
+  background: linear-gradient(50deg,rgba(7, 163, 168, 1) 0%, rgba(78, 204, 196, 1) 50%, rgba(255, 255, 255, 1) 100%);
   text-decoration: none;
   color: var(--text-dark);
   border: none;
@@ -17,7 +17,7 @@
   border-radius: 5px;
 }
 
-nav {
+.navbar {
   background-color: rgb(6, 109, 109);
   text-align: center;
   margin: auto;
@@ -44,7 +44,7 @@ footer {
 }
 .dropdown-toggle {
   cursor: pointer;
-  background: rgb(0, 163, 155);
+  background: linear-gradient(50deg,rgba(7, 163, 168, 1) 0%, rgba(78, 204, 196, 1) 50%, rgba(255, 255, 255, 1) 100%);
   color: var(--text-dark);
   border: none;
   font-weight: 500;

@@ -7,7 +7,10 @@
 </head>
 <body>
     <h1>Lista de Usuarios Registrados</h1>
-    <table>
+    <div class="option-container">
+        <a class="admin-option" href="{% url 'users:admin_panel' %}">Volver a Panel Admin</a>
+    </div>
+    <table class="table-container">
         <thead>
             <tr>
                 <th>ID</th>
@@ -22,9 +25,15 @@
                 <td>{{ user.id }}</td>
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
-                <td class="actions">
-                    <a href="{% url 'users:edit_account' user.id %}" class="edit">Editar</a>
-                    <a href="{% url 'users:delete_account' user.id %}" class="delete" onclick="return confirm('¿Está seguro de eliminar este usuario?');">Eliminar</a>
+                <td>
+                    <div class="actions">
+                    <a href="{% url 'users:edit_account' user.id %}" 
+                        class="edit">Editar
+                    </a>
+                    <a href="{% url 'users:delete_account' user.id %}" 
+                        class="delete" onclick="return confirm('¿Está seguro de eliminar este usuario?');">Eliminar
+                    </a>
+                    </div>
                 </td>
             </tr>
             {% empty %}
@@ -34,8 +43,5 @@
             {% endfor %}
         </tbody>
     </table>
-    <div>
-        <a class="admin-option" href="{% url 'users:admin_panel' %}">Panel Admin</a>
-    </div>
 </body>
 </html>

@@ -4,9 +4,11 @@
 
 {% block content %}
 {% load static %}
-    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+    <header>
+        <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+    </header>
     <h1>Panel Administrador</h1>
-    <div>
+    <div class="option-container">
         <div>
             <a class="admin-option" href="{% url 'users:manage_users' %}">Control de usuarios</a>
         </div>
