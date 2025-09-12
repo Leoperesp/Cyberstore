@@ -1,0 +1,19 @@
+.about-section {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(50deg,rgba(7, 163, 168, 1) 0%, rgba(78, 204, 196, 1) 50%, rgba(255, 255, 255, 1) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.about-container {
+    background-color: #ffffff2c;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+}
