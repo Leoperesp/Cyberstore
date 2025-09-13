@@ -70,3 +70,40 @@ def update_order_status(request, order_id):
         order.save()
         return redirect('store:order_detail', order_id=order.id)
     return render(request, 'store/admin/order_detail.html', {'order': order})
+
+def add_to_cart(request, product_id):
+    product = Product.objects.get(id=product_id)
+    cart = request.session.get('cart', {})
+    if str(product_id) in cart:
+        cart[str(product_id)]['quantity'] += 1
+    else:
+        cart[str(product_id)] = {'name': product.name, 'price': str(product.price), 'quantity': 1}
+    request.session['cart'] = cart
+    return redirect('store:product_list')
+
+def view_cart(request):
+    cart = request.session.get('cart', {})
+    total = sum(float(item['price']) * item['quantity'] for item in cart.values())
+    return render(request, 'store/cart.html', {'cart': cart, 'total': total})
+
+def remove_from_cart(request, product_id):
+    cart = request.session.get('cart', {})
+    if str(product_id) in cart:
+        del cart[str(product_id)]
+        request.session['cart'] = cart
+    return redirect('store:view_cart')
+
+def clear_cart(request):
+    request.session['cart'] = {}
+    return redirect('store:view_cart')
+
+def checkout(request):
+    cart = request.session.get('cart', {})
+    if not cart:
+        return redirect('store:view_cart')
+    total = sum(float(item['price']) * item['quantity'] for item in cart.values())
+    if request.method == 'POST':
+        # Aquí iría la lógica para procesar el pago y crear la orden
+        request.session['cart'] = {}  # Limpiar el carrito después del checkout
+        return redirect('store:home')
+    return render(request, 'store/checkout.html', {'cart': cart, 'total': total})
