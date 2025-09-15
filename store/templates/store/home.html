@@ -10,24 +10,24 @@
 <body>
     <h1 class="page-title">Nuestras ofertas</h1>
     <div class="container">
-        {% if product.is_offered %}
-            {% for product in products %}
+        {% for product in products %}
+            {% if product.is_offered %}
                 <a href="{% url 'store:product_detail' product.id %}" class="product-card">
                 <div class="product-image-container">
                     <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                    <p class="product-offer">Descuento de {{ product.discount_percentage }}%</p>
                 </div>
                 <div class="product-info">
                     <h2 class="product-title">{{ product.name }}</h2>
                     <p class="product-description">{{ product.description|truncatechars:100 }}</p>
-                    <p class="product-price">${{ product.price }}</p>
+                    <p class="product-price" style="text-decoration:line-through; color: grey" >$ {{ product.price }}</p>
+                    <p class="product-price">$ {{ product.offer_price }}</p>
                 </div>
                 <div style="padding: 15px; border-top: 1px solid #eee;">
                     <button type="button" class="btn-add-to-cart">Agregar al carrito</button>
                 </div>
-                </a>
-            {% endfor %}
-        {% else %}
-            <p class="noitems">No hay productos en oferta en este momento.</p>
-        {% endif %}
+            {% endif %}
+        {% endfor %}
     </div>
+</body>
 {% endblock %}

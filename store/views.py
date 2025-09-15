@@ -1,11 +1,21 @@
 from django.shortcuts import render, redirect
-from .models import Product  # Asegúrate de que este es el nombre de tu modelo de producto
+from .models import Product 
 from .forms import ProductForm
 from .models import Order
 
 def home(request):
-    products = Product.objects.all()
-    return render(request, 'store/home.html', {'products': products})
+    offered_products = Product.objects.filter(is_offered=True)
+    for product in offered_products:
+        if product.price and product.offer_price > 0:
+            discount_percentage = ((product.price - product.offer_price) / product.price) * 100
+            product.discount_percentage = round(discount_percentage)
+        else:
+            product.discount_percentage = 0
+    context = {
+        'products': offered_products
+    }
+    
+    return render(request, 'store/home.html', context)
 
 def product_list(request):
     products = Product.objects.all()
