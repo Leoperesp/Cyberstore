@@ -2,40 +2,46 @@
 
 {% block title %}Mi carrito - CyberShop{% endblock %}
 {% block content %}
-<h2>Carrito de {{ user.username }}</h2>
-{% if cart_items %}
-<table>
-    <tr>
-        <th>Product</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Total</th>
-        <th>Actions</th>
-    </tr>
-    {% for item in cart_items %}
-    <tr>
-        <td>{{ item.product.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>${{ item.product.price }}</td>
-        <td>${{ item.total_price }}</td>
-        <td>
-            <form method="post" action="{% url 'store:remove_from_cart' item.product.id %}">
-                {% csrf_token %}
-                <button type="submit">Remove</button>
-            </form>
-        </td>
-    </tr>
-    {% endfor %}
-    <tr>
-        <td colspan="3"><strong>Total</strong></td>
-        <td colspan="2"><strong>${{ cart_total }}</strong></td>
-    </tr>
-</table>
-<a href="{% url 'store:checkout' %}">Proceder a pago</a>
-<a href="{% url 'store:products' %}">Continuar comprando</a>
-<a href="{% url 'store:clear_cart' %}">Limpiar carrito</a>
+{% load static %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/cart.css' %}">
+</head>
+<body>
+    <h1>Carrito de {{ user.username }}</h1>
+    {% if cart_items %}
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th>Actions</th>
+        </tr>
+        {% for item in cart_items %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.product.price }}</td>
+            <td>${{ item.total_price }}</td>
+            <td>
+                <form method="post" action="{% url 'store:remove_from_cart' item.product.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Remove</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="3"><strong>Total</strong></td>
+            <td colspan="2"><strong>${{ cart_total }}</strong></td>
+        </tr>
+    </table>
+    <a class="pay" href="{% url 'store:checkout' %}">Proceder a pago</a>
+    <a class="shopping" href="{% url 'store:products' %}">Continuar comprando</a>
+    <a class="clear_cart" href="{% url 'store:clear_cart' %}">Limpiar carrito</a>
 
-{% else %}
-<p>Tu carrito esta vacío... <a href="{% url 'store:products' %}">Ver productos</a></p>
-{% endif %}
+    {% else %}
+    <p>Tu carrito esta vacío... <a class="products" href="{% url 'store:products' %}">Ver productos</a></p>
+    {% endif %}
+</body>
 {% endblock %}

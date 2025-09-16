@@ -1,0 +1,98 @@
+h1 {
+    text-align: center;
+    color: rgb(0, 163, 155);
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: medium;
+    text-align: center;
+    color: var(--text-dark);
+}
+
+table, th, td {
+    border-collapse: collapse;
+    max-width: 1200px;
+    border: 1px solid rgb(0, 163, 155);
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    background: white; 
+    padding: 10px;
+}
+
+
+
+
+.pay{
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.pay:hover {
+    background-color: #45a049;
+}
+
+.shopping{
+    background-color: #008CBA; /* Blue */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.shopping:hover {
+    background-color: #007bb5;
+}
+
+.clear_cart{
+    background-color: #f44336; /* Red */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.clear_cart:hover {
+    background-color: #da190b;
+}
+
+.products {
+  display: inline-block;
+  background: linear-gradient(50deg,rgba(7, 163, 168, 1) 0%, rgba(78, 204, 196, 1) 50%, rgba(255, 255, 255, 1) 100%);
+  text-decoration: none;
+  color: var(--text-dark);
+  border: none;
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: color 0.3s ease;
+
+}
+
+.products:hover {
+  background: var(--primary-color);
+  color: white;
+  border-radius: 5px;
+}

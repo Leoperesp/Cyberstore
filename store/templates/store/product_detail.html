@@ -22,7 +22,7 @@
                 {% if product.is_available %} {{ product.stock }} Unidades disponibles{% else %}Sin stock{% endif %}
             </p> 
             <p  class="product-price">
-             {% if product.is_offer %}
+             {% if product.is_offered %}
             <span class="old-price">${{ product.price }}</span>
             <span class="offer-price">${{ product.offer_price }}</span>
             {% else %}
@@ -30,7 +30,7 @@
             {% endif %}
             </p>
             {% if product.is_available %}
-            <form method="post" action="#">
+            <form method="post" action="store:add_to_cart/{{ product.id }}/">
                 {% csrf_token %}
                 <label for="quantity">Unidades:</label>
                 <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}">

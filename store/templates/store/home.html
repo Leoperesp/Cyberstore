@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="{% static 'css/products.css' %}">
 </head>
 <body>
+    {% if user.is_authenticated %}
+        <h1 class="page-title">Hola {{ user.username }}!</h1>
+    {% else %}
+        <h1 class="page-title">Bienvenido a CyberShop</h1>
+    {% endif %}
     <h1 class="page-title">Nuestras ofertas</h1>
     <div class="container">
         {% for product in products %}
