@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from .models import Product 
 from .forms import ProductForm
 from .models import Order
@@ -81,20 +82,53 @@ def update_order_status(request, order_id):
         return redirect('store:order_detail', order_id=order.id)
     return render(request, 'store/admin/order_detail.html', {'order': order})
 
+
 def add_to_cart(request, product_id):
-    product = Product.objects.get(id=product_id)
+    product = get_object_or_404(Product, id=product_id)
     cart = request.session.get('cart', {})
-    if str(product_id) in cart:
-        cart[str(product_id)]['quantity'] += 1
+    product_id_str = str(product.id)
+    if product_id_str in cart:
+        cart[product_id_str]['quantity'] += 1
+        messages.success(request, f'Se agregó una unidad más de "{product.name}" al carrito.')
     else:
-        cart[str(product_id)] = {'name': product.name, 'price': str(product.price), 'quantity': 1}
+        cart[product_id_str] = {
+            'quantity': 1,
+            'price': str(product.price)
+        }
+        messages.success(request, f'"{product.name}" fue agregado a tu carrito.')
     request.session['cart'] = cart
-    return redirect('store:product_list')
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
 
 def view_cart(request):
     cart = request.session.get('cart', {})
-    total = sum(float(item['price']) * item['quantity'] for item in cart.values())
-    return render(request, 'store/cart.html', {'cart': cart, 'total': total})
+    
+    cart_items = []
+    total_price = 0
+
+    for product_id_str, item_data in cart.items():
+        try:
+            product = get_object_or_404(Product, pk=product_id_str)
+
+            quantity = item_data['quantity']
+            item_price = float(item_data['price'])
+            item_total = item_price * quantity
+
+            cart_items.append({
+                'product': product,
+                'quantity': quantity,
+                'total_price': item_total,
+            })
+            
+            total_price += item_total
+            
+        except (KeyError, ValueError, Product.DoesNotExist):
+            pass 
+    context = {
+        'cart_items': cart_items,
+        'cart_total': total_price,
+    }
+    
+    return render(request, 'store/cart.html', context)
 
 def remove_from_cart(request, product_id):
     cart = request.session.get('cart', {})

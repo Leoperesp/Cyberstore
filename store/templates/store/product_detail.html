@@ -29,15 +29,19 @@
             $  {{ product.price }}
             {% endif %}
             </p>
-            {% if product.is_available %}
-            <form method="post" action="store:add_to_cart/{{ product.id }}/">
-                {% csrf_token %}
-                <label for="quantity">Unidades:</label>
-                <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}">
-                <button type="submit" class="btn-add-to-cart">Agregar al carrito</button>
-            </form>
+            {% if user.is_authenticated %}
+                {% if product.is_available %}
+                <form method="post" action="{% url 'store:add_to_cart' product.id %}">
+                    {% csrf_token %}
+                    <label for="quantity">Cantidad:</label>
+                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}">
+                    <button type="submit" class="btn-add-to-cart">Agregar al carrito</button>
+                {% else %}
+                <p class="out-of-stock-message">Producto sin stock</p>
+                </form>
+                {% endif %}
             {% else %}
-            <p class="out-of-stock-message">Producto sin stock</p>
+                <p class="login-message">para agregar al carrito <a class="btn-add-to-cart" href="{% url 'users:login' %}">inicia sesión</a></p>
             {% endif %}
         </div>
     </div>
