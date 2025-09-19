@@ -1,3 +1,11 @@
+html{
+  height: 100%;
+}
+
+body{
+  margin: 0;
+}
+
 .nav-links {
   display: inline-block;
   background: linear-gradient(50deg,rgba(7, 163, 168, 1) 0%, rgba(78, 204, 196, 1) 50%, rgba(255, 255, 255, 1) 100%);
@@ -30,11 +38,9 @@ footer {
   margin: 0;
   padding: 3px 0;
   color: white;
-  position: fixed;
-  left: 0;
   bottom: 0;
   width: 100%;
-  z-index: 100;
+  flex-shrink: 0;
 }
 
 /* Dropdown styles */
