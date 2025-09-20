@@ -151,3 +151,6 @@ def checkout(request):
         request.session['cart'] = {}  # Limpiar el carrito después del checkout
         return redirect('store:home')
     return render(request, 'store/checkout.html', {'cart': cart, 'total': total})
+
+def send_email(request):
+    return render(request, 'store/email.html') 

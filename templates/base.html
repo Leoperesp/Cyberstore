@@ -8,6 +8,24 @@
     <title>{% block title %}CyberShop{% endblock %}</title>
     </head>
 <body>
+   <script>
+        // Menú desplegable al hacer clic
+        document.addEventListener('DOMContentLoaded', function() {
+            var dropdown = document.querySelector('.nav-dropdown');
+            var toggle = document.querySelector('.dropdown-toggle');
+            if (dropdown && toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('open');
+                });
+                document.addEventListener('click', function(e) {
+                    if (!dropdown.contains(e.target)) {
+                        dropdown.classList.remove('open');
+                    }
+                });
+            }
+        });
+    </script>
     <header>
         <nav class="navbar">
             <a class="nav-links" href="/">CyberShop</a>
@@ -17,7 +35,7 @@
             <div class="nav-dropdown">
                 <button class="nav-links dropdown-toggle">Contacto ▼</button>
                 <div class="dropdown-menu">
-                    <a href="/contact/escribenos/">Escríbenos</a>
+                    <a href="{% url 'store:email'%}">Escríbenos</a>
                     <a href="https://wa.me/1234567890" target="_blank">Whatsapp</a>
                     <a href="/faq/">Preguntas frecuentes</a>
                 </div>
@@ -35,7 +53,7 @@
         </nav>
     </header>
 
-    <main>
+    <main class="main-content">
         {% block content %}
         {% if messages %}
             <ul class="messages">
@@ -51,24 +69,5 @@
         <p>&copy; 2025 CyberShop. Todos los derechos reservados.</p>
     </footer>
     </main>
-
-    <script>
-    // Menú desplegable al hacer clic
-    document.addEventListener('DOMContentLoaded', function() {
-        var dropdown = document.querySelector('.nav-dropdown');
-        var toggle = document.querySelector('.dropdown-toggle');
-        if (dropdown && toggle) {
-            toggle.addEventListener('click', function(e) {
-                e.stopPropagation();
-                dropdown.classList.toggle('open');
-            });
-            document.addEventListener('click', function(e) {
-                if (!dropdown.contains(e.target)) {
-                    dropdown.classList.remove('open');
-                }
-            });
-        }
-    });
-    </script>
 </body>
 </html>
