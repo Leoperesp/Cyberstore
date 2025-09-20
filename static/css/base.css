@@ -37,9 +37,60 @@ body{
   text-align: center;
   margin: auto;
   padding: 5px 0;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  position: relative; 
+  z-index: 999; 
 }
 
-footer {
+
+.hamburger-toggle {
+    display: none; 
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1000;
+}
+
+.hamburger-toggle .bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #333; /* Color de las líneas de la hamburguesa */
+    margin: 5px 0;
+    transition: all 0.3s ease;
+}
+
+/* --- Media Query para dispositivos móviles --- */
+@media (max-width: 768px) {
+    .nav-links-container {
+        display: none; /* Oculta el menú por defecto en móviles */
+        position: absolute;
+        top: 60px; /* Ajusta según la altura de tu header */
+        right: 0;
+        width: 100%;
+        background-color: #00aaaa8e;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        padding: 1rem 0;
+        transition: transform 0.3s ease-in-out;
+        transform: translateY(-100%); /* Oculta el menú por encima de la pantalla */
+    }
+
+    .nav-links-container.open {
+        display: flex; /* Muestra el menú cuando tiene la clase 'open' */
+        transform: translateY(0);
+    }
+    
+    .hamburger-toggle {
+        display: block; /* Muestra el botón de hamburguesa en móviles */
+    }
+}
+
+.footer {
   background-color: rgb(6, 109, 109);
   text-align: center;
   margin: 0;
