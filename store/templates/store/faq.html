@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi CyberShop{% endblock %}
+{% block content %}
+{% load static %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/faq.css' %}">
+    <script src="{% static 'js/faq.js' %}" defer></script>
+</head>
+<body>
+    <div class="faq-container">
+        <div class="container">
+            <h1>Preguntas frecuentes</h1>
+            <button class="question-btn" data-question="q1">¿Cómo puedo crear una cuenta?</button>
+            <button class="question-btn" data-question="q2">¿Cuáles son los métodos de pago disponibles?</button>
+            <button class="question-btn" data-question="q3">¿Cómo puedo rastrear mi pedido?</button>
+            <button class="question-btn" data-question="q4">¿Cuál es la política de devoluciones?</button>
+            <button class="question-btn" data-question="q5">¿Cómo puedo contactar al servicio al cliente?</button>
+            <button class="question-btn" data-question="q6">¿Puedo cambiar o cancelar mi pedido?</button>
+            <button class="question-btn" data-question="q7">¿Cómo puedo aplicar un código de descuento?</button>
+            <button class="question-btn" data-question="q8">¿Qué hago si olvidé mi contraseña?</button>
+        </div>
+
+        <div class="answer" data-answer="q1">
+            <h2>¿Cómo puedo crear una cuenta?</h2>
+            <p>Para crear una cuenta, haz clic en el botón "Iniciar sesión" en el menú principal y luego en la opcion Crear una... luego completa el formulario con tu información personal.</p>      
+        </div>
+        <div class="answer" data-answer="q2">
+            <h2>¿Cuáles son los métodos de pago disponibles?</h2>
+            <p>Aceptamos tarjetas de crédito, débito, PayPal y transferencias bancarias. Puedes seleccionar tu método de pago preferido durante el proceso de compra.</p>
+        </div>
+        <div class="answer" data-answer="q3">
+            <h2>¿Cómo puedo rastrear mi pedido?</h2>
+            <p>Una vez que tu pedido haya sido enviado, recibirás un correo electrónico con un número de seguimiento y un enlace para rastrear tu paquete en tiempo real.</p>  
+        </div>  
+        <div class="answer" data-answer="q4">
+            <h2>¿Cuál es la política de devoluciones?</h2>
+            <p>Ofrecemos una política de devoluciones de 30 días. Si no estás satisfecho con tu compra, puedes devolver el producto en su estado original para un reembolso completo.</p>
+        </div>
+        <div class="answer" data-answer="q5">
+            <h2>¿Cómo puedo contactar al servicio al cliente?</h2>
+            <p>Puedes contactarnos enviando un correo electrónico en la sección Escribenos, o por mensaje instantaneo a travez de whatsapp en la seccion de contacto.</p>
+        </div>
+        <div class="answer" data-answer="q6">
+            <h2>¿Puedo cambiar o cancelar mi pedido?</h2>
+            <p>Si necesitas cambiar o cancelar tu pedido, contáctanos lo antes posible. Haremos todo lo posible para ayudarte, pero ten en cuenta que una vez que el pedido ha sido procesado, no podremos realizar cambios.</p>
+        </div>
+        <div class="answer" data-answer="q7">
+            <h2>¿Cómo puedo aplicar un código de descuento?</h2>
+            <p>Durante el proceso de compra, encontrarás un campo para ingresar tu código de descuento. Introduce el código y haz clic en "Aplicar" para ver el descuento reflejado en tu total.</p>
+        </div>
+        <div class="answer" data-answer="q8">
+            <h2>¿Qué hago si olvidé mi contraseña?</h2>
+            <p>Si olvidaste tu contraseña, haz clic en el enlace "¿Olvidaste tu contraseña?" en la página de inicio de sesión. Sigue las instrucciones para restablecer tu contraseña a través de tu correo electrónico.</p>
+        </div>
+    </div>
+</body>
+{% endblock %}
