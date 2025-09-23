@@ -11,6 +11,27 @@
     <link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
 </head>
 <body>
+    <script>
+        // Selecciona el elemento de la alerta
+        var alertElement = document.getElementById('success-alert');
+
+        // Verifica si la alerta existe en la página
+        if (alertElement) {
+            // Usa setTimeout para ocultar la alerta después de 3 segundos (3000 milisegundos)
+            setTimeout(function() {
+                // Oculta la alerta
+                alertElement.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success" role="alert" id="success-alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
     <h1 class="product-title">{{ product.name }}</h1> 
     <div class="product-container">
         <div>
@@ -36,9 +57,9 @@
                     <label for="quantity">Cantidad:</label>
                     <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}">
                     <button type="submit" class="btn-add-to-cart">Agregar al carrito</button>
+                </form>
                 {% else %}
                 <p class="out-of-stock-message">Producto sin stock</p>
-                </form>
                 {% endif %}
             {% else %}
                 <p class="login-message">para agregar al carrito <a class="btn-add-to-cart" href="{% url 'users:login' %}">inicia sesión</a></p>

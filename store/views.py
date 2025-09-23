@@ -87,15 +87,22 @@ def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     cart = request.session.get('cart', {})
     product_id_str = str(product.id)
+
+    try:
+        quantity = int(request.POST.get('quantity', 1))
+    except (ValueError, TypeError):
+        quantity = 1 
+
     if product_id_str in cart:
-        cart[product_id_str]['quantity'] += 1
-        messages.success(request, f'Se agregó una unidad más de "{product.name}" al carrito.')
+        cart[product_id_str]['quantity'] += quantity
+        messages.success(request, f'Se agregaron {quantity} unidades más de "{product.name}" al carrito.')
     else:
         cart[product_id_str] = {
-            'quantity': 1,
+            'quantity': quantity,
             'price': str(product.price)
         }
-        messages.success(request, f'"{product.name}" fue agregado a tu carrito.')
+        messages.success(request, f'"{product.name}" fue agregado a tu carrito (Cantidad: {quantity}).')
+
     request.session['cart'] = cart
     return redirect(request.META.get('HTTP_REFERER', 'home'))
 
@@ -111,7 +118,10 @@ def view_cart(request):
 
             quantity = item_data['quantity']
             item_price = float(item_data['price'])
-            item_total = item_price * quantity
+            if product.is_offered :
+                item_total = product.offer_price * quantity
+            else:
+                item_total = item_price * quantity
 
             cart_items.append({
                 'product': product,

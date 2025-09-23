@@ -15,18 +15,22 @@
             <th>Quantity</th>
             <th>Price</th>
             <th>Total</th>
-            <th>Actions</th>
+            <th>Action</th>
         </tr>
         {% for item in cart_items %}
         <tr>
             <td>{{ item.product.name }}</td>
             <td>{{ item.quantity }}</td>
-            <td>${{ item.product.price }}</td>
+            <td>{% if item.product.is_offered %}
+                    ${{ item.product.offer_price }}
+                {% else %}
+                    ${{ item.product.price }}{% endif %}
+            </td>
             <td>${{ item.total_price }}</td>
             <td>
                 <form method="post" action="{% url 'store:remove_from_cart' item.product.id %}">
                     {% csrf_token %}
-                    <button type="submit">Remove</button>
+                    <button type="submit">Borrar</button>
                 </form>
             </td>
         </tr>
@@ -36,9 +40,11 @@
             <td colspan="2"><strong>${{ cart_total }}</strong></td>
         </tr>
     </table>
-    <a class="pay" href="{% url 'store:checkout' %}">Proceder a pago</a>
-    <a class="shopping" href="{% url 'store:products' %}">Continuar comprando</a>
-    <a class="clear_cart" href="{% url 'store:clear_cart' %}">Limpiar carrito</a>
+    <div class="buttons">
+        <a class="pay" href="{% url 'store:checkout' %}">Proceder a pago</a>
+        <a class="shopping" href="{% url 'store:products' %}">Continuar comprando</a>
+        <a class="clear_cart" href="{% url 'store:clear_cart' %}">Limpiar carrito</a>
+    </div>
 
     {% else %}
     <p>Tu carrito esta vacío... <a class="products" href="{% url 'store:products' %}">Ver productos</a></p>

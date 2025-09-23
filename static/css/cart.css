@@ -21,17 +21,23 @@ table, th, td {
     padding: 10px;
 }
 
+.buttons {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
 
-
-
-.pay{
-    background-color: #4CAF50; /* Green */
+.pay, .shopping, .clear_cart{
+    background-color: rgb(0, 163, 155);
     border: none;
     color: white;
     padding: 10px 20px;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
+    max-width: 150px;
     font-size: 16px;
     margin: 4px 2px;
     cursor: pointer;
@@ -42,36 +48,8 @@ table, th, td {
     background-color: #45a049;
 }
 
-.shopping{
-    background-color: #008CBA; /* Blue */
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
 .shopping:hover {
     background-color: #007bb5;
-}
-
-.clear_cart{
-    background-color: #f44336; /* Red */
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 5px;
 }
 
 .clear_cart:hover {
