@@ -3,6 +3,7 @@ from django.contrib import messages
 from .models import Product 
 from .forms import ProductForm
 from .models import Order
+from decimal import Decimal
 
 def home(request):
     offered_products = Product.objects.filter(is_offered=True)
@@ -108,37 +109,41 @@ def add_to_cart(request, product_id):
 
 def view_cart(request):
     cart = request.session.get('cart', {})
-    
+
     cart_items = []
-    total_price = 0
+    total_price = Decimal(0) # Inicia total_price como un Decimal
 
     for product_id_str, item_data in cart.items():
         try:
             product = get_object_or_404(Product, pk=product_id_str)
 
             quantity = item_data['quantity']
-            item_price = float(item_data['price'])
-            if product.is_offered :
+
+            item_price = product.price
+
+            if product.is_offered:
                 item_total = product.offer_price * quantity
             else:
-                item_total = item_price * quantity
+                 item_total = product.price * quantity
 
             cart_items.append({
                 'product': product,
                 'quantity': quantity,
                 'total_price': item_total,
             })
-            
+
             total_price += item_total
-            
+
         except (KeyError, ValueError, Product.DoesNotExist):
             pass 
+
     context = {
         'cart_items': cart_items,
         'cart_total': total_price,
     }
-    
+
     return render(request, 'store/cart.html', context)
+
 
 def remove_from_cart(request, product_id):
     cart = request.session.get('cart', {})

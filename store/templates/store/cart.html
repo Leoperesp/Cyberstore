@@ -30,7 +30,7 @@
             <td>
                 <form method="post" action="{% url 'store:remove_from_cart' item.product.id %}">
                     {% csrf_token %}
-                    <button type="submit">Borrar</button>
+                    <button type="submit" class="clear_cart">Borrar</button>
                 </form>
             </td>
         </tr>
