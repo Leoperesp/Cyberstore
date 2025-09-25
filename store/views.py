@@ -167,5 +167,16 @@ def checkout(request):
         return redirect('store:home')
     return render(request, 'store/checkout.html', {'cart': cart, 'total': total})
 
+def checkout_cash(request):
+    cart = request.session.get('cart', {})
+    if not cart:
+        return redirect('store:view_cart')
+    total = sum(float(item['price']) * item['quantity'] for item in cart.values())
+    if request.method == 'POST':
+        # Aquí iría la lógica para crear la orden con pago en efectivo
+        request.session['cart'] = {}  # Limpiar el carrito después del checkout
+        return redirect('store:home')
+    return render(request, 'store/checkout_cash.html', {'cart': cart, 'total': total})
+
 def send_email(request):
     return render(request, 'store/email.html') 
