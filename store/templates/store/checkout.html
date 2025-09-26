@@ -4,17 +4,17 @@
 {% block content %}
 {% load static %}
 <head>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/cart.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/chck.css' %}">
 </head>
 <body>
     <div class="pago-container">
         <h1>Proceder a pago</h1>
-        <p>elije el metodo de pago</p>
+        <p>Elije el metodo de pago:</p>
         <div class="buttons">
             <a class="pay" href="#">Pagar con PayPal</a>
             <a class="pay" href="#">Pagar con tarjeta</a>
             <a class="pay" href="{% url 'store:checkout_cash' %}">Pagar contra entrega</a>      
-            <a class="shopping" href="{% url 'store:cart' %}">Volver al carrito</a>
+            <a class="shopping" href="{% url 'store:view_cart' %}">Volver al carrito</a>
         </div>
     </div>
 </body>

@@ -1,0 +1,44 @@
+h1 {
+    text-align: center;
+    color: rgb(0, 163, 155);
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 24px;
+    text-align: center;
+    color: var(--text-dark);
+}
+
+
+.buttons {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.pay, .shopping, .clear_cart{
+    background-color: rgb(0, 163, 155);
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    max-width: 150px;
+    font-size: 25px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.pay:hover {
+    background-color: #45a049;
+}
+
+.shopping:hover {
+    background-color: #007bb5;
+}
+

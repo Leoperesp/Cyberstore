@@ -16,20 +16,26 @@ class Product(models.Model):
         ],
         default='Procesadores')
     name = models.CharField(max_length=200)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=0)
     stock = models.IntegerField()
     image = models.ImageField(upload_to='products/', blank=True)
     is_available = models.BooleanField(default=True)
     description = models.TextField(blank=True)
     is_offered = models.BooleanField(default=False)
-    offer_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    offer_price = models.DecimalField(max_digits=10, decimal_places=0, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 class Order(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
-    def get_default_document_number():
-        from users.models import CustomUser
-        return getattr(CustomUser.objects.first(), 'document_number', '')
-    document_number = models.CharField(default=get_default_document_number)
+    document_number = models.CharField(
+        max_length=50, 
+        blank=True, 
+        null=True,
+
+    )
+    
     created_at = models.DateTimeField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     is_paid = models.BooleanField(default=False)
@@ -39,19 +45,37 @@ class Order(models.Model):
             ('paypal', 'PayPal'),
             ('cash', 'Efectivo')
         ],
-        default='cash')
-    def get_default_address():
-        from users.models import CustomUser
-        return getattr(CustomUser.objects.first(), 'address', '')
+        default='cash'
+    )
+
     shipping_address = models.CharField(
         max_length=255,
-        default=get_default_address
+        blank=True, 
+        null=True 
     )
+    
     status = models.CharField(
         choices=[('pending', 'Pendiente'), ('shipped', 'Enviado'), ('delivered', 'Entregado'), ('canceled', 'Cancelado')],
         default='pending'
     )
     observations = models.TextField(blank=True)
+
+    def save(self, *args, **kwargs):
+        # Si el usuario está autenticado, asignar datos automáticamente
+        if self.user:
+            # Asignar document_number
+            if not self.document_number and self.user.document_number:
+                self.document_number = self.user.document_number
+            
+            # Asignar shipping_address
+            if not self.shipping_address and self.user.address:
+                self.shipping_address = self.user.address
+        
+        # Guardar la instancia del modelo en la base de datos
+        super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return f"Order {self.id} by {self.user.username if self.user else 'Guest'}"
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required 
 from django.contrib import messages
-from .models import Product 
-from .forms import ProductForm
+from .models import Product, OrderItem
+from .forms import ProductForm, ShippingForm
 from .models import Order
 from decimal import Decimal
 
@@ -180,3 +181,129 @@ def checkout_cash(request):
 
 def send_email(request):
     return render(request, 'store/email.html') 
+
+@login_required
+def cash_payment_view(request):
+    cart_session = request.session.get('cart', {})
+    if not cart_session:
+        messages.warning(request, 'Tu carrito está vacío. Agrega productos para continuar.')
+        return redirect('store:view_cart')
+
+    # --- Lógica de cálculo del Carrito (Mejorada para consistencia) ---
+    cart_items = []
+    total_price = Decimal(0)
+    for product_id_str, item_data in cart_session.items():
+        try:
+            product = get_object_or_404(Product, pk=product_id_str)
+            quantity = item_data['quantity']
+            
+            # Usar offer_price si aplica
+            price_to_use = product.offer_price if product.is_offered and product.offer_price else product.price
+            item_total = price_to_use * quantity
+            
+            cart_items.append({
+                'product': product,
+                'quantity': quantity,
+                'total_price': item_total,
+                'unit_price': price_to_use, # Nuevo campo útil
+            })
+            total_price += item_total
+        except Product.DoesNotExist:
+            continue # Ignora si el producto no existe
+
+    # --- Lógica de Precarga del Formulario ---
+    user = request.user
+    
+    # Intenta obtener los datos del perfil (Asegúrate de que el perfil exista)
+    try:
+        profile = user.profile
+        initial_data = {
+            # Asumimos que el ShippingForm corregido tiene campos 'name', 'address', 'phone'
+            'name': f"{user.first_name} {user.last_name}",
+            'address': profile.shipping_address,
+            'phone': profile.phone_number,
+        }
+    except AttributeError:
+        # Si el usuario no tiene un perfil, inicializa con first_name y last_name
+        initial_data = {
+            'name': f"{user.first_name} {user.last_name}".strip(), # Mejor usar los campos existentes
+            'address': '',
+            'phone': '', # O usar 'phone_number' si ese es el nombre de campo de tu form
+        }
+        
+    form = ShippingForm(initial=initial_data)
+
+    context = {
+        'cart_items': cart_items,
+        'total_price': total_price, # Usamos total_price para mayor claridad
+        'form': form, # Pasamos el formulario
+    }
+    
+    return render(request, 'store/checkout_cash.html', context)
+
+@login_required 
+def process_cash_payment(request):
+    if request.method == 'POST':
+        form = ShippingForm(request.POST)
+        cart_session = request.session.get('cart', {})
+        
+        if not cart_session:
+            messages.error(request, 'No hay productos en tu carrito para procesar el pedido.')
+            return redirect('store:view_cart')
+
+        if form.is_valid():
+            shipping_data = form.cleaned_data
+            
+            total_price = Decimal(0)
+            order_items_data = [] 
+            
+            for product_id_str, item_data in cart_session.items():
+                try:
+                    product = get_object_or_404(Product, pk=product_id_str)
+                    quantity = item_data['quantity']
+                    
+                    price_to_use = product.offer_price if product.is_offered and product.offer_price else product.price
+                    item_total = price_to_use * quantity
+                    total_price += item_total
+                    
+                    order_items_data.append({
+                        'product': product,
+                        'quantity': quantity,
+                        'unit_price': price_to_use,
+                    })
+                except Product.DoesNotExist:
+                    continue
+            
+            # 3. Crear la Orden (Asegúrate de que los nombres de campos coincidan con tu modelo Order)
+            order = Order.objects.create(
+                user=request.user,
+                # Ajusta estos campos según los que hayas definido en tu modelo Order:
+                recipient_name=shipping_data['name'], 
+                shipping_phone=shipping_data['phone'], 
+                shipping_address=shipping_data['address'], # Este ya existe
+                
+                total_amount=total_price,
+                payment_method='cash',
+                is_paid=False, 
+                status='pending',
+            )
+
+            # 4. Crear los ítems de la orden (OrderItem) 
+            for item_data in order_items_data:
+                OrderItem.objects.create(
+                    order=order,
+                    product=item_data['product'],
+                    quantity=item_data['quantity'],
+                    price=item_data['unit_price'],
+                )
+            
+            # 5. Limpiar el carrito y mostrar mensaje
+            del request.session['cart']
+            messages.success(request, f'¡Tu pedido #{order.id} ha sido confirmado! Recibirás la entrega en la dirección: {order.shipping_address}. Por favor, prepara ${total_price} en efectivo.')
+            return redirect('store:home')
+        
+        else:
+            messages.error(request, 'Hubo un error con los datos de envío. Por favor, verifica y reintenta.')
+            return redirect('store:cash_payment_view')
+
+    return redirect('store:cash_payment_view')

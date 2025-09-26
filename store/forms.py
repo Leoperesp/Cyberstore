@@ -1,5 +1,6 @@
 from django import forms
-from .models import Product
+from .models import Product, Order
+
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -11,22 +12,23 @@ class ProductForm(forms.ModelForm):
             'offer_price': forms.NumberInput(attrs={'step': '0.01'}),
         }
 
-class OrderForm(forms.Form):
-    model = Product
-    fields = ['name', 'document_number', 'shipping_address', 'payment_method', 'is_paid', 'status']
-    widgets = {
-        'payment_method': forms.Select(choices=[
-            ('credit_card', 'Tarjeta de Crédito'),
-            ('paypal', 'PayPal'),
-            ('cash', 'Efectivo')
-        ])
-    }
-    def __init__(self, *args, **kwargs):
-        super(OrderForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs['readonly'] = True
-        self.fields['document_number'].widget.attrs['readonly'] = True
-        self.fields['shipping_address'].widget.attrs['readonly'] = True
-        self.fields['payment_method'].widget.attrs['readonly'] = True
-        self.fields['is_paid'].widget.attrs['readonly'] = True
-        self.fields['status'].widget.attrs['readonly'] = True
+class OrderForm(forms.ModelForm): 
+    class Meta:
+        model = Order 
+        fields = ['document_number', 'shipping_address', 'payment_method', 'is_paid', 'status']
+        widgets = {
+            'payment_method': forms.Select(choices=[
+                ('credit_card', 'Tarjeta de Crédito'),
+                ('paypal', 'PayPal'),
+                ('cash', 'Efectivo')
+            ])
+        }
 
+class ShippingForm(forms.Form):
+    name = forms.CharField(max_length=100, label='Nombre Completo', 
+                           widget=forms.TextInput(attrs={'placeholder': 'Nombre Completo'}))
+    address = forms.CharField(max_length=255, label='Dirección de Entrega', 
+                              widget=forms.TextInput(attrs={'placeholder': 'Dirección de envío'}))
+    phone = forms.CharField(max_length=20, label='Número de Teléfono', 
+                            widget=forms.TextInput(attrs={'placeholder': 'Número de teléfono'}))
+    
