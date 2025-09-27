@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
-
-{% block title %}Mi carrito - CyberShop{% endblock %}
-{% block content %}
 {% load static %}
-<head>
+{% block title %}Mi carrito - CyberShop{% endblock %}
+{% block extra_head %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/chck.css' %}">
-</head>
+{% endblock %}
+{% block content %}
+
 <body>
     <div class="pago-container">
         <h1>Proceder a pago</h1>

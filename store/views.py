@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required 
 from django.contrib import messages
-from .models import Product, OrderItem
+from .models import Product, Order, OrderItem
 from .forms import ProductForm, ShippingForm
 from .models import Order
 from decimal import Decimal
@@ -189,7 +189,7 @@ def cash_payment_view(request):
         messages.warning(request, 'Tu carrito está vacío. Agrega productos para continuar.')
         return redirect('store:view_cart')
 
-    # --- Lógica de cálculo del Carrito (Mejorada para consistencia) ---
+    # Lógica de cálculo del Carrito
     cart_items = []
     total_price = Decimal(0)
     for product_id_str, item_data in cart_session.items():
@@ -197,49 +197,52 @@ def cash_payment_view(request):
             product = get_object_or_404(Product, pk=product_id_str)
             quantity = item_data['quantity']
             
-            # Usar offer_price si aplica
             price_to_use = product.offer_price if product.is_offered and product.offer_price else product.price
             item_total = price_to_use * quantity
+            total_price += item_total
             
             cart_items.append({
                 'product': product,
                 'quantity': quantity,
                 'total_price': item_total,
-                'unit_price': price_to_use, # Nuevo campo útil
+                'unit_price': price_to_use, 
             })
-            total_price += item_total
         except Product.DoesNotExist:
-            continue # Ignora si el producto no existe
+            continue
 
-    # --- Lógica de Precarga del Formulario ---
+    # --- Lógica de Precarga del Formulario (Autocompletado) ---
     user = request.user
     
-    # Intenta obtener los datos del perfil (Asegúrate de que el perfil exista)
-    try:
-        profile = user.profile
-        initial_data = {
-            # Asumimos que el ShippingForm corregido tiene campos 'name', 'address', 'phone'
-            'name': f"{user.first_name} {user.last_name}",
-            'address': profile.shipping_address,
-            'phone': profile.phone_number,
-        }
-    except AttributeError:
-        # Si el usuario no tiene un perfil, inicializa con first_name y last_name
-        initial_data = {
-            'name': f"{user.first_name} {user.last_name}".strip(), # Mejor usar los campos existentes
-            'address': '',
-            'phone': '', # O usar 'phone_number' si ese es el nombre de campo de tu form
-        }
-        
-    form = ShippingForm(initial=initial_data)
+    # Prepara el nombre completo, usando .strip() para evitar espacios extra si un nombre falta
+    full_name = f"{user.first_name} {user.last_name}".strip()
+    
+    initial_data = {
+        'name': full_name,
+        # Obtiene directamente de los campos del CustomUser
+        'address': user.address, 
+        'phone': user.phone_number,
+    }
+    
+    # Si hay errores de validación de un POST anterior, recarga con esos datos fallidos (mejor UX)
+    if request.session.get('shipping_form_post_data'):
+        # Recarga con los datos que fallaron la validación
+        form = ShippingForm(request.session.pop('shipping_form_post_data'))
+    else:
+        # Primera carga (GET), usa los datos iniciales del CustomUser
+        form = ShippingForm(initial=initial_data)
 
     context = {
         'cart_items': cart_items,
-        'total_price': total_price, # Usamos total_price para mayor claridad
-        'form': form, # Pasamos el formulario
+        'total_price': total_price,
+        'form': form, # Pasa el formulario autocompletado/recargado
     }
     
+    # NOTA: Asegúrate de que tu template 'store/checkout_cash.html' use el form.
     return render(request, 'store/checkout_cash.html', context)
+
+# ----------------------------------------------------------------------
+## 2. process_cash_payment: Procesa el Formulario de Envío Editado (POST)
+# ----------------------------------------------------------------------
 
 @login_required 
 def process_cash_payment(request):
@@ -253,7 +256,14 @@ def process_cash_payment(request):
 
         if form.is_valid():
             shipping_data = form.cleaned_data
+            user = request.user
             
+            # 1. Actualiza los datos del usuario con los datos del formulario (si fueron editados)
+            user.address = shipping_data['address']
+            user.phone_number = shipping_data['phone']
+            user.save() 
+            
+            # 2. Recálculo del carrito y preparación de OrderItem
             total_price = Decimal(0)
             order_items_data = [] 
             
@@ -274,13 +284,13 @@ def process_cash_payment(request):
                 except Product.DoesNotExist:
                     continue
             
-            # 3. Crear la Orden (Asegúrate de que los nombres de campos coincidan con tu modelo Order)
+            # 3. Crear la Orden (usando los datos recién validados/editados)
             order = Order.objects.create(
                 user=request.user,
-                # Ajusta estos campos según los que hayas definido en tu modelo Order:
-                recipient_name=shipping_data['name'], 
+                # Usa los datos validados del formulario:
+                full_name=shipping_data['name'], 
                 shipping_phone=shipping_data['phone'], 
-                shipping_address=shipping_data['address'], # Este ya existe
+                shipping_address=shipping_data['address'], 
                 
                 total_amount=total_price,
                 payment_method='cash',
@@ -288,7 +298,7 @@ def process_cash_payment(request):
                 status='pending',
             )
 
-            # 4. Crear los ítems de la orden (OrderItem) 
+            # 4. Crear los ítems de la orden (OrderItem)
             for item_data in order_items_data:
                 OrderItem.objects.create(
                     order=order,
@@ -297,13 +307,17 @@ def process_cash_payment(request):
                     price=item_data['unit_price'],
                 )
             
-            # 5. Limpiar el carrito y mostrar mensaje
+            # 5. Finalizar la transacción
             del request.session['cart']
             messages.success(request, f'¡Tu pedido #{order.id} ha sido confirmado! Recibirás la entrega en la dirección: {order.shipping_address}. Por favor, prepara ${total_price} en efectivo.')
             return redirect('store:home')
         
         else:
+            # Si la validación falla (ej. campo requerido vacío)
+            # Guardamos los datos POST en la sesión para que cash_payment_view los recargue
+            request.session['shipping_form_post_data'] = request.POST
             messages.error(request, 'Hubo un error con los datos de envío. Por favor, verifica y reintenta.')
-            return redirect('store:cash_payment_view')
+            return redirect('store:cash_payment_view') # Redirige a la vista GET para mostrar el formulario con errores
 
+    # Si se accede por GET, redirige a la vista principal
     return redirect('store:cash_payment_view')

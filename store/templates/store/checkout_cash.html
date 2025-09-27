@@ -1,28 +1,44 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Mi carrito - CyberShop{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/cash.css' %}">
+{% endblock %}
+
 {% block content %}
-{% load static %}
-<body>
-   <div class="form-container">
-      <h2>Detalles del pedido</h2>
-        <form method="post" action="{% url 'store:process_cash_payment' %}">
+<div class="checkout-container">
+    <div class="form-container">
+        <h1>Confirmación de Pedido y Envío</h1>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <form class="form-group" method="post" action="{% url 'store:process_cash_payment' %}">
             {% csrf_token %}
             
-            <div class="mb-3">
-                <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }}</label>
-                {{ form.name }}
-            </div>
-            <div class="mb-3">
-                <label for="{{ form.address.id_for_label }}" class="form-label">{{ form.address.label }}</label>
-                {{ form.address }}
-            </div>
-            <div class="mb-3">
-                <label for="{{ form.phone.id_for_label }}" class="form-label">{{ form.phone.label }}</label>
-                {{ form.phone }}
-            </div>
+            <h2>Dirección de Envío</h2>
+            <p>La información se autocompleta con tus datos de registro. Puedes editarla si es necesario.</p>
             
-            <button type="submit" class="btn btn-primary">Confirmar Pedido</button>
-        </form>
-</body>
+            {{ form.as_p }} 
+            
+            <hr>
+            
+            <h2>Resumen del Carrito</h2>
+            <ul>
+            {% for item in cart_items %}
+                <li>{{ item.product.name }} (x{{ item.quantity }}) - ${{ item.total_price }}</li>
+            {% endfor %}
+            </ul>
+            
+            <h3>Total a Pagar: ${{ total_price }} (en efectivo)</h3>
+            
+            <button class="btn-submit" type="submit">Confirmar Pedido y Pagar en Efectivo</button>
+        </form> 
+    </div>
+</div>
 {% endblock %}

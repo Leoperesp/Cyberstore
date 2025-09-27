@@ -1,71 +1,64 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %} {{ product.name }} {% endblock %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+{% endblock %}
 
 {% block content %}
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
-</head>
-<body>
-    <script>
-        // Selecciona el elemento de la alerta
-        var alertElement = document.getElementById('success-alert');
+<script>
+    // Selecciona el elemento de la alerta
+    var alertElement = document.getElementById('success-alert');
 
-        // Verifica si la alerta existe en la página
-        if (alertElement) {
-            // Usa setTimeout para ocultar la alerta después de 3 segundos (3000 milisegundos)
-            setTimeout(function() {
-                // Oculta la alerta
-                alertElement.style.display = 'none';
-            }, 3000);
-        }
-    </script>
+    // Verifica si la alerta existe en la página
+    if (alertElement) {
+        // Usa setTimeout para ocultar la alerta después de 3 segundos (3000 milisegundos)
+        setTimeout(function() {
+            // Oculta la alerta
+            alertElement.style.display = 'none';
+        }, 3000);
+    }
+</script>
 
-    {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-success" role="alert" id="success-alert">
-            {{ message }}
-        </div>
-        {% endfor %}
-    {% endif %}
-    <h1 class="product-title">{{ product.name }}</h1> 
-    <div class="product-container">
-        <div>
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
-        </div>
-        <div class="product-details">
-            <p>{{ product.description }}</p>
-            <p class="product-availability {% if product.is_available %}in-stock{% else %}out-of-stock{% endif %}">
-                {% if product.is_available %} {{ product.stock }} Unidades disponibles{% else %}Sin stock{% endif %}
-            </p> 
-            <p  class="product-price">
-             {% if product.is_offered %}
-            <span class="old-price">${{ product.price }}</span>
-            <span class="offer-price">${{ product.offer_price }}</span>
-            {% else %}
-            $  {{ product.price }}
-            {% endif %}
-            </p>
-            {% if user.is_authenticated %}
-                {% if product.is_available %}
-                <form method="post" action="{% url 'store:add_to_cart' product.id %}">
-                    {% csrf_token %}
-                    <label for="quantity">Cantidad:</label>
-                    <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}">
-                    <button type="submit" class="btn-add-to-cart">Agregar al carrito</button>
-                </form>
-                {% else %}
-                <p class="out-of-stock-message">Producto sin stock</p>
-                {% endif %}
-            {% else %}
-                <p class="login-message">para agregar al carrito <a class="btn-add-to-cart" href="{% url 'users:login' %}">inicia sesión</a></p>
-            {% endif %}
-        </div>
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-success" role="alert" id="success-alert">
+        {{ message }}
     </div>
-</body>
-</html>
+    {% endfor %}
+{% endif %}
+<h1 class="product-title">{{ product.name }}</h1> 
+<div class="product-container">
+    <div>
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+    </div>
+    <div class="product-details">
+        <p>{{ product.description }}</p>
+        <p class="product-availability {% if product.is_available %}in-stock{% else %}out-of-stock{% endif %}">
+            {% if product.is_available %} {{ product.stock }} Unidades disponibles{% else %}Sin stock{% endif %}
+        </p> 
+        <p  class="product-price">
+            {% if product.is_offered %}
+        <span class="old-price">${{ product.price }}</span>
+        <span class="offer-price">${{ product.offer_price }}</span>
+        {% else %}
+        $  {{ product.price }}
+        {% endif %}
+        </p>
+        {% if user.is_authenticated %}
+            {% if product.is_available %}
+            <form method="post" action="{% url 'store:add_to_cart' product.id %}">
+                {% csrf_token %}
+                <label for="quantity">Cantidad:</label>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}">
+                <button type="submit" class="btn-add-to-cart">Agregar al carrito</button>
+            </form>
+            {% else %}
+            <p class="out-of-stock-message">Producto sin stock</p>
+            {% endif %}
+        {% else %}
+            <p class="login-message">para agregar al carrito <a class="btn-add-to-cart" href="{% url 'users:login' %}">inicia sesión</a></p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

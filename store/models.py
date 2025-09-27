@@ -36,6 +36,9 @@ class Order(models.Model):
 
     )
     
+    full_name = models.CharField(max_length=100, blank=True, null=True)
+    shipping_phone = models.CharField(max_length=20, blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     is_paid = models.BooleanField(default=False)
@@ -61,17 +64,17 @@ class Order(models.Model):
     observations = models.TextField(blank=True)
 
     def save(self, *args, **kwargs):
-        # Si el usuario está autenticado, asignar datos automáticamente
         if self.user:
             # Asignar document_number
             if not self.document_number and self.user.document_number:
                 self.document_number = self.user.document_number
-            
-            # Asignar shipping_address
+            # Asignar recipient_name
             if not self.shipping_address and self.user.address:
                 self.shipping_address = self.user.address
+            # Asignar shipping_phone
+            if not self.shipping_phone and self.user.phone_number:
+                self.shipping_phone = self.user.phone_number
         
-        # Guardar la instancia del modelo en la base de datos
         super().save(*args, **kwargs)
     
     def __str__(self):
