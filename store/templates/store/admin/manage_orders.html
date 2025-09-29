@@ -3,39 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrar ordenes</title>
+    <title>Administrar Ordenes</title>
     <link rel="stylesheet" href="/static/css/admin.css">
 </head>
 <body>
-    <h1>Lista de Ordenes</h1>
+    <h1>Order List</h1>
     <div class="option-container">
-        <a class="admin-option" href="{% url 'users:admin_panel' %}">Panel Admin</a>
+        <a class="admin-option" href="{% url 'users:admin_panel' %}">Admin Panel</a>
     </div>
     <table>
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Usuario</th>
-                <th>Fecha de Orden</th>
-                <th>Total</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+                <th>User</th>
+                <th>Order Date</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            {% for orden in ordenes %}
+            {% for order in orders %}
             <tr>
-                <td>{{ orden.id }}</td>
-                <td>{{ orden.usuario.username }}</td>
-                <td>{{ orden.fecha_orden }}</td>
-                <td>{{ orden.total }}</td>
-                <td>{{ orden.estado }}</td>
+                <td>{{ order.id }}</td>
+                <td>{{ order.user.username }}</td> 
+                <td>{{ order.created_at }}</td> 
+                <td>{{ order.total_amount }}</td> 
+                <td>{{ order.status }}</td> 
                 <td>
-                    <a href="{% url 'view_order' orden.id %}" class="btn btn-primary">Ver Detalles</a>
-                    <form action="{% url 'delete_order' orden.id %}" method="post" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Borrar</button>
-                    </form>
+                    <div class="actions">
+                        <a href="{% url 'store:update_order_status' order.id %}" class="edit">View Details</a>
+                        
+                        <form action="{% url 'store:delete_order' order.id %}" method="post" >
+                            {% csrf_token %}
+                            <button type="submit" class="delete">Delete</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             {% endfor %}
