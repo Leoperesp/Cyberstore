@@ -33,11 +33,6 @@
                 <td>
                     <div class="actions">
                         <a href="{% url 'store:update_order_status' order.id %}" class="edit">View Details</a>
-                        
-                        <form action="{% url 'store:delete_order' order.id %}" method="post" >
-                            {% csrf_token %}
-                            <button type="submit" class="delete">Delete</button>
-                        </form>
                     </div>
                 </td>
             </tr>

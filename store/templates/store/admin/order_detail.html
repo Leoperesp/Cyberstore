@@ -1,47 +1,86 @@
-{% extends "base.html" %}
-{% block content %}
-<h2>Order Details #{{ order.id }}</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Administrar Usuarios</title>
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+    <h1>Detalles de la Orden #{{ order.id }}</h1>
+    <div class="option-container">
+        <a class="admin-option" href="{% url 'store:manage_orders' %}">Control de pedidos</a>
+        <a class="admin-option" href="{% url 'users:admin_panel' %}">Panel Admin</a>
+    </div>
 
-<p><strong>Current Status:</strong> {{ order.get_status_display }}</p>
+    <h1><strong>Estado Actual:</strong> {{ order.get_status_display }}</h1>
 
-<table border="1">
-    <thead>
-        <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
-            <th>Subtotal</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in order.orderitem_set.all %}
-        <tr>
-            <td>{{ item.product.name }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>${{ item.price|floatformat:2 }}</td>
-            <td>
-                ${{ item.get_total|floatformat:2 }}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <table class="table-container">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.orderitem_set.all %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>
+                    ${{ item.price|floatformat:2 }}
+                </td>
+                <td>
+                    ${{ item.subtotal|floatformat:2 }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-<br>
-<p><strong>Total (Grand Total):</strong> ${{ order.total_amount|floatformat:2 }}</p>
+    <br>
+    <div class="option-container">
+        <p><strong>Total (Monto Total):</strong> ${{ order.total_amount|floatformat:2 }}</p>
 
-<p><strong>Observations:</strong> {{ order.observations }}</p>
+        <p><strong>Observaciones:</strong> {{ order.observations }}</p>
+    </div>
 
-<form method="post" action="{% url 'store:update_order_status' order.id %}">
-    {% csrf_token %}
-    <button type="submit" name="action" value="shipped" {% if order.status != 'pending' %}disabled{% endif %}>
-        Dispatch Order
-    </button>
-    
-    <button type="submit" name="action" value="canceled" 
-        {% if order.status == 'shipped' or order.status == 'delivered' %}disabled{% endif %}>
-        Cancel Order
-    </button>
-</form>
+    ---
+    <div class="option-container">
+            <h1>Acciones de la Orden</h1>
 
-{% endblock content %}
+        {% if order.status != 'canceled' %}
+            
+            {# 1. FORMULARIO PARA CAMBIAR A ESTADO 'SHIPPED' #}
+            <form method="post" action="{% url 'store:update_order_status' order.id %}" style="display: inline-block; margin-right: 10px;">
+                {% csrf_token %}
+                <button type="submit" name="action" value="shipped" {% if order.status != 'pending' %}disabled{% endif %} class="btn btn-primary">
+                    🚚 Enviar Orden (Dispatch)
+                </button>
+            </form>
+            
+            {# 2. FORMULARIO PARA CANCELAR Y DEVOLVER STOCK (NUEVA VISTA) #}
+            <form method="POST" action="{% url 'store:cancel_order_and_return_stock' order.id %}" style="display: inline-block;">
+                {% csrf_token %}
+                
+                {# Deshabilitar el botón si la orden ya fue enviada o completada #}
+                {% if order.status == 'shipped' or order.status == 'delivered' %}
+                <button type="submit" class="btn btn-warning" disabled>
+                    No se puede cancelar (Ya en tránsito)
+                </button>
+                {% else %}
+                <button type="submit" class="btn btn-danger" 
+                        onclick="return confirm('⚠️ ¿Estás seguro de que deseas CANCELAR esta orden y devolver los productos al inventario? Esta acción es irreversible.')">
+                    ❌ Cancelar y Devolver Stock
+                </button>
+                {% endif %}
+            </form>
+            
+        {% else %}
+            <p class="text-danger">Esta orden ha sido <b>cancelada</b> y el stock fue devuelto.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

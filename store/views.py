@@ -118,42 +118,50 @@ def update_order_status(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     if request.method == 'POST':
         action = request.POST.get('action')
+        
         if action == 'shipped':
             order.status = 'shipped'
+            order.save()
+            messages.success(request, f'El estado de la orden #{order.id} ha sido actualizado a {order.status}.')
+            
         elif action == 'canceled':
-            order.status = 'canceled'
-        order.save()
-        messages.success(request, f'El estado de la orden #{order.id} ha sido actualizado a {order.status}.')
+            return redirect('store:cancel_order_and_return_stock', order_id=order.id)
+        
         return redirect('store:manage_orders') # Redirigir a la lista de órdenes
     
-    # Vista para ver el detalle de la orden o un formulario simple de actualización
     return render(request, 'store/admin/order_detail.html', {'order': order})
 
 
 @transaction.atomic
-def delete_order(request, order_id):
+def cancel_order_and_return_stock(request, order_id):
+
+    if request.method != 'POST':
+        return redirect('store:manage_orders')
+
     order = get_object_or_404(Order, id=order_id)
-    order_id_log = order.id # Capturamos el ID de forma segura para el mensaje
+    order_id_log = order.id
+    
+    # 1. Evitar la devolución doble de stock
+    if order.status == 'canceled':
+        messages.warning(request, f'La orden #{order_id_log} ya estaba cancelada. No se modificó el stock.')
+        return redirect('store:manage_orders')
 
-    # Obtener una lista de OrderItems *antes* de la eliminación
-    # Esto asegura que accedemos a la relación antes de que Django la "limpie" en la memoria
+    # 2. Devolver el inventario
     items_to_return = list(order.orderitem_set.all())
-
-    # 1. Devolver el inventario
+    items_returned_count = 0
     for item in items_to_return:
-        product = item.product 
-        quantity = item.quantity 
-        
-        # Aumentar el stock del producto
+        # ... lógica de stock ...
+        product = item.product
+        quantity = item.quantity
         product.stock += quantity
         product.save() 
+        items_returned_count += 1
         
-    # 2. Eliminar la orden
-    # Si la devolución del inventario fue exitosa para todos los items,
-    # la orden se elimina.
-    order.delete()
+    # 3. Actualizar el estado de la orden
+    order.status = 'canceled'
+    order.save()
 
-    messages.success(request, f'La orden #{order_id_log} ha sido eliminada y sus productos ({len(items_to_return)} items) han regresado al inventario.')
+    messages.success(request, f'La orden **#{order_id_log}** ha sido **CANCELADA** y sus productos ({items_returned_count} items) han regresado al inventario. ✅')
     return redirect('store:manage_orders')
 
 # ----------------------------------------------------------------------
