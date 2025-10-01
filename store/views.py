@@ -60,8 +60,35 @@ def home(request):
     return render(request, 'store/home.html', context)
 
 def product_list(request):
+    # 1. Obtener todas las opciones de categoría directamente desde el modelo Product
+    # Esto te dará una lista de tuplas: [('Procesadores', 'Procesadores'), ('Monitores', 'Monitores'), ...]
+    category_choices = Product.category.field.choices
+    
+    # Transformamos las tuplas en una lista simple de strings (solo la parte legible/slug)
+    # Esto resulta en: ['Procesadores', 'Monitores', ...]
+    categories = [choice[0] for choice in category_choices]
+    
+    # ... el resto de la lógica de la vista continúa abajo ...
+    
+    # 2. Inicialmente, obtenemos todos los productos.
     products = Product.objects.all()
-    return render(request, 'store/products.html', {'products': products})
+    current_category = None
+    
+    # 3. Obtener la categoría del parámetro de la URL (query parameter)
+    category_filter = request.GET.get('category')
+    
+    if category_filter:
+        # Usamos .filter() directamente en el campo 'category'
+        products = products.filter(category=category_filter)
+        current_category = category_filter # Guardamos el string de la categoría activa
+    
+    context = {
+        'products': products,
+        'categories': categories,         # Pasamos la lista de categorías
+        'current_category': current_category, # Pasamos la categoría activa (string)
+    }
+    
+    return render(request, 'store/products.html', context)
 
 def product_detail(request, product_id):
     product = Product.objects.get(id=product_id)

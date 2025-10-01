@@ -7,6 +7,26 @@
 
 {% block content %}
 <h1 class="page-title">Nuestros Productos</h1>
+
+<div class="filter-section">
+    <form method="get" action="{% url 'store:products' %}">
+        <label for="category-select">Filtrar por Categoría:</label>
+        <select name="category" id="category-select" onchange="this.form.submit()">
+            
+            <option value="" {% if not current_category %}selected{% endif %}>
+                Todos los Productos
+            </option>
+            
+            {% for category_name in categories %}
+                <option value="{{ category_name }}" 
+                        {% if current_category == category_name %}selected{% endif %}>
+                    {{ category_name }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+</div>
+
 <div class="container">
     {% for product in products %}
         {% if product.is_offered %}
@@ -24,6 +44,7 @@
             <div style="padding: 15px; border-top: 1px solid #eee;">
                 <button type="button" class="btn-add-to-cart">Agregar al carrito</button>
             </div>
+            </a>
         {% else %}
             <a href="{% url 'store:product_detail' product.id %}" class="product-card">
                 <div class="product-image-container">

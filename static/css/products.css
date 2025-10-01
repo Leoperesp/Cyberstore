@@ -11,6 +11,22 @@
     max-width: 1200px;
     margin: 0 auto;
 }
+
+.filter-section {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.filter-section label {
+    margin-right: 10px;
+    color: #00806a;
+}
+
+.filter-section select {
+    border-radius: 5px;
+    background-color: #007bff00;
+}
+
 .product-card {
     background-color: #fff;
     border-radius: 8px;

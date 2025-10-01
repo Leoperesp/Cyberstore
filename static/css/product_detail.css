@@ -5,11 +5,16 @@
     gap: 2rem;
     margin-bottom: 2rem;
     max-width: 900px;
+    align-items: flex-start; /* Añadir para mejor alineación en desktop */
+}
+
+.product-image-area {
+    flex: 0 0 auto; /* Evita que la imagen se estire */
+    max-width: 300px; /* Limita el ancho máximo de la imagen */
 }
 
 .product-image {
     max-width: 300px;
-    max-height: 300px;
     object-fit: cover;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -17,7 +22,8 @@
 
 .product-details {
     display: block;
-    width: 200px;
+    max-width: 200px;
+    flex: 1; /* Permite que ocupe el espacio restante en desktop */
 }
 
 .product-title {
@@ -88,4 +94,38 @@
     border-color: #d6e9c6;
     text-align: center;
     font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    
+    .product-container {
+        flex-direction: column; 
+        gap: 20px;
+        padding: 15px; 
+    }
+
+    .product-image-area,
+    .product-details {
+        width: 100%; 
+        flex: none;
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    
+    .product-image-area {
+        width: 100%;
+        margin: 0 auto; 
+    }
+    
+    .product-image {
+        max-width: 100%; 
+    }
+    
+    .login-message {
+        text-align: center;
+        width: 70%;
+        box-sizing: border-box;
+        font-size: 1rem;
+    }
 }
